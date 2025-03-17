@@ -1,4 +1,4 @@
-# happy-birthday-website
+# Happy Birthday Jenna! 🎊
 It's a birthday website for somebody special.
 
 This takes quite a bit of time, so I really do hope you appreciate it 😄.
