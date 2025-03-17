@@ -48,6 +48,38 @@
             border-radius: 5px;
         }
 
+        /* Instructions Box (Left Side) */
+        .instructions-box {
+            position: fixed;
+            top: 80px; /* Below Navbar */
+            left: 20px; /* Align left */
+            width: 250px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            z-index: 1000;
+        }
+
+        /* Styling Inside the Box */
+        .instructions-box h2 {
+            font-size: 1.4em;
+            color: black;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .instructions-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .instructions-box li {
+            font-size: 1em;
+            color: black;
+            padding: 5px 0;
+        }
+
         /* Sticky Note Board */
         #messageWall {
             width: 80%;
@@ -148,6 +180,52 @@
         .navbar a:hover {
             color: yellow;
         }
+
+        /* Pop-up Container (Hidden by Default) */
+        .popup {
+            position: fixed;
+            top: 80px; /* Below Navbar */
+            right: 20px; /* Position on the right */
+            width: 250px;
+            height: auto;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            display: none; /* Hidden initially */
+            flex-direction: column;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        /* Pop-up Content */
+        .popup-content {
+            text-align: center;
+            font-size: 1.2em;
+            color: black;
+        }
+
+        /* Close Button */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: red;
+            color: white;
+            border: none;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .close-btn:hover {
+            background: darkred;
+        }
+
     </style>
 </head>
 <body>
@@ -156,12 +234,30 @@
         <a href="message-wall.html">🎉 Birthday Wall</a>
         <a href="https://github.com/cyrolite/happy-birthday-website" target="_blank">💻 GitHub</a>
     </div>
+    
+    <div id="instructions" class="instructions-box">
+        <h2>📝 How to Use</h2>
+        <ul>
+            <li>Type a message and click "Post Message".</li>
+            <li>Click a note to view it in detail.</li>
+            <li>Click the red button to delete a note.</li>
+        </ul>
+    </div>
+
     <div class="container">
         <h1>🎉 Birthday Message Wall 🎉</h1>
         <textarea id="messageInput" placeholder="Type your message..."></textarea>
         <br>
         <button onclick="postMessage()">Post Message</button>
         <div id="messageWall"></div>
+    </div>
+
+    <div id="notePopup" class="popup">
+        <div class="popup-content">
+            <button class="close-btn" onclick="closePopup()"></button>
+            <h2>📌 Note</h2>
+            <p id="popupText">Click on a note to view its details.</p>
+        </div>
     </div>
 
     <script>
@@ -171,8 +267,11 @@
             if (messageText === "") return;
 
             const board = document.getElementById("messageWall");
-            const boardWidth = board.clientWidth - 150; // Ensures notes fit within width
-            const boardHeight = board.clientHeight - 150; // Ensures notes fit within height
+            const boardWidth = board.clientWidth - 160; // Leave some margin
+            const boardHeight = board.clientHeight - 160;
+
+            const randomX = Math.floor(Math.random() * boardWidth);
+            const randomY = Math.floor(Math.random() * boardHeight);
 
             // Create sticky note element
             const message = document.createElement("div");
@@ -190,11 +289,14 @@
                 removeMessage(messageText);
             });
 
-            // Set random position within the board
-            const randomX = Math.floor(Math.random() * boardWidth);
-            const randomY = Math.floor(Math.random() * boardHeight);
+            // Set random position
             message.style.left = `${randomX}px`;
             message.style.top = `${randomY}px`;
+
+            // Open popup on click
+            message.addEventListener("click", function () {
+                openPopup(messageText);
+            });
 
             // Append text and button to message
             message.appendChild(textSpan);
@@ -208,6 +310,17 @@
 
             // Clear input field
             input.value = "";
+        }
+
+        // Open the pop-up when clicking a sticky note
+        function openPopup(noteText) {
+            document.getElementById("popupText").innerText = noteText;
+            document.getElementById("notePopup").style.display = "flex";
+        }
+
+        // Close the pop-up
+        function closePopup() {
+            document.getElementById("notePopup").style.display = "none";
         }
 
         // Save message with coordinates
