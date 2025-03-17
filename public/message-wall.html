@@ -285,8 +285,8 @@
             const deleteButton = document.createElement("button");
             deleteButton.classList.add("delete-btn");
             deleteButton.addEventListener("click", function () {
-                message.remove();
-                removeMessage(messageText);
+                removeMessage(messageText); // Delete from localStorage
+                message.remove(); // Remove from UI
             });
 
             // Set random position
@@ -333,41 +333,64 @@
         // Remove message from localStorage when deleted
         function removeMessage(text) {
             let messages = JSON.parse(localStorage.getItem("messages")) || [];
-            messages = messages.filter(msg => msg !== text);
-            localStorage.setItem("messages", JSON.stringify(messages));
-        }
 
+            // Find and remove the specific message
+            const updatedMessages = messages.filter(msg => msg.text !== text);
+
+            // Update localStorage
+            localStorage.setItem("messages", JSON.stringify(updatedMessages));
+
+            // Refresh the message wall UI
+            loadMessages();
+        }
         // Load messages on page refresh with saved positions
         function loadMessages() {
-            let messages = JSON.parse(localStorage.getItem("messages")) || [];
-            messages.forEach(({ text, x, y }) => {
-                const board = document.getElementById("messageWall");
+            const board = document.getElementById("messageWall");
+            board.innerHTML = ""; // Clear the board before loading
 
+            let messages = JSON.parse(localStorage.getItem("messages")) || [];
+
+            messages.forEach(({ text, x, y }) => {
                 const message = document.createElement("div");
                 message.classList.add("message");
 
+                // Create text container
                 const textSpan = document.createElement("span");
                 textSpan.innerText = text;
 
+                // Create delete button
                 const deleteButton = document.createElement("button");
                 deleteButton.classList.add("delete-btn");
+
+                // Fix: Attach event listener so delete works after refresh
                 deleteButton.addEventListener("click", function () {
-                    message.remove();
-                    removeMessage(text);
+                    removeMessage(text); // Remove from localStorage
+                    message.remove(); // Remove from UI
                 });
 
-                // Set saved position
+                // Fix: Attach event listener to open the pop-up
+                message.addEventListener("click", function () {
+                    openPopup(text);
+                });
+
+
+                // Position the note
                 message.style.left = `${x}px`;
                 message.style.top = `${y}px`;
 
+                // Append elements
                 message.appendChild(textSpan);
                 message.appendChild(deleteButton);
                 board.appendChild(message);
             });
         }
 
+
         // Load messages when the page opens
-        window.onload = loadMessages;
+        window.onload = function () {
+            loadMessages();
+            localStorage.setItem("messages", localStorage.getItem("messages")); // Force refresh
+        };
 
         // Allow posting with Enter key
         document.getElementById("messageInput").addEventListener("keypress", function(event) {
