@@ -126,9 +126,36 @@
             margin-top: 10px;
             transition: opacity 0.3s ease-in-out;
         }
+
+        /* Navigation Bar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            text-align: left;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2em;
+            margin: 0 15px;
+        }
+
+        .navbar a:hover {
+            color: yellow;
+        }
     </style>
 </head>
 <body>
+    <div class="navbar">
+        <a href="message-wall.html">🎉 Birthday Wall</a>
+        <a href="https://github.com/cyrolite/happy-birthday-website" target="_blank">💻 GitHub</a>
+    </div>
     <div class="container">
         <div class="message" id="message">🎉 Happy Birthday Jen! 🎉</div>
         <div class="countdown" id="countdown"></div>

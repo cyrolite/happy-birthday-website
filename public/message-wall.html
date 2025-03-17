@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Message Wall</title>
+    <style>
+        /* Ensure background fills the full page */
+        html, body {
+            font-family: 'Arial', 'Sans-Serif';
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #FF66B2, #FF1493);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Birthday Message Wall */
+        .container {
+            width: 100%;
+            height: 100%;
+            background: #228B22; /* Green background to resemble a pinboard */
+            padding: 20px;
+            border-radius: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 80px; /* This ensures it starts below the navbar */
+        }
+
+        textarea {
+            width: 90%;
+            height: 80px;
+            font-size: 1.2em;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: yellow;
+            color: black;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* Sticky Note Board */
+        #messageWall {
+            width: 90%;
+            height: auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 20px;
+            overflow-y: auto; /* Allows scrolling if notes exceed height */
+        }
+
+        .message {
+            background: yellow;
+            color: black;
+            font-size: 1em;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            max-width: 200px;
+            word-wrap: break-word;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Sticky Note Board */
+        #messageWall {
+            width: 90%;
+            height: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        /* Sticky Note Styling */
+        .message {
+            background: #FFEB3B; /* Default yellow sticky note */
+            color: black;
+            font-size: 1.2em;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 5px;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+            max-width: 200px;
+            word-wrap: break-word;
+            position: relative;
+            cursor: default;
+            transition: transform 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Random Rotation Effect */
+        .message:nth-child(odd) { transform: rotate(-3deg); }
+        .message:nth-child(even) { transform: rotate(3deg); }
+
+        /* Random Background Colors for Post-It Notes */
+        .message:nth-child(1n) { background: #FFFACD; } /* Light Yellow */
+        .message:nth-child(2n) { background: #FFDAB9; } /* Peach */
+        .message:nth-child(3n) { background: #C6E2FF; } /* Light Blue */
+        .message:nth-child(4n) { background: #98FB98; } /* Light Green */
+        .message:nth-child(5n) { background: #FFC0CB; } /* Light Pink */
+
+        /* Delete Button Styling */
+        .delete-btn {
+            position: absolute;
+            top: -8px;  /* Move it slightly above the sticky note */
+            right: -8px;
+            background: red;
+            color: white;
+            border: none;
+            font-size: 0.8em;
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 15px;
+            transition: 0.2s;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Hover effect for delete button */
+        .delete-btn:hover {
+            background: darkred;
+            transform: scale(1.1);
+        }
+
+        /* Fix main menu to stay on top */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            text-align: left;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2em;
+            margin: 0 15px;
+        }
+
+        .navbar a:hover {
+            color: yellow;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html">Back To Countdown!</a>
+        <a href="message-wall.html">🎉 Birthday Wall</a>
+        <a href="https://github.com/cyrolite/happy-birthday-website" target="_blank">💻 GitHub</a>
+    </div>
+    <div class="container">
+        <h1>🎉 Birthday Message Wall 🎉</h1>
+        <textarea id="messageInput" placeholder="Type your message..."></textarea>
+        <br>
+        <button onclick="postMessage()">Post Message</button>
+        <div id="messageWall"></div>
+    </div>
+
+    <script>
+        function postMessage() {
+            const input = document.getElementById("messageInput");
+            const messageText = input.value.trim();
+            if (messageText === "") return;
+
+            // Create sticky note element
+            const message = document.createElement("div");
+            message.classList.add("message");
+
+            // Create text container
+            const textSpan = document.createElement("span");
+            textSpan.innerText = messageText;
+
+            // Create delete button
+            const deleteButton = document.createElement("button");
+            deleteButton.classList.add("delete-btn");
+            deleteButton.addEventListener("click", function () {
+                message.remove();
+                removeMessage(messageText);
+            });
+
+            // Append text and button to message
+            message.appendChild(textSpan);
+            message.appendChild(deleteButton);
+
+            // Append message to the wall
+            document.getElementById("messageWall").appendChild(message);
+
+            // Save message to localStorage
+            saveMessage(messageText);
+
+            // Clear input field
+            input.value = "";
+        }
+
+        // Save message to localStorage
+        function saveMessage(text) {
+            let messages = JSON.parse(localStorage.getItem("messages")) || [];
+            messages.push(text);
+            localStorage.setItem("messages", JSON.stringify(messages));
+        }
+
+
+        // Remove message from localStorage when deleted
+        function removeMessage(text) {
+            let messages = JSON.parse(localStorage.getItem("messages")) || [];
+            messages = messages.filter(msg => msg !== text);
+            localStorage.setItem("messages", JSON.stringify(messages));
+        }
+
+        // Load messages on page refresh
+        function loadMessages() {
+            let messages = JSON.parse(localStorage.getItem("messages")) || [];
+            messages.forEach(text => {
+                const message = document.createElement("div");
+                message.classList.add("message");
+
+                // Create text container
+                const textSpan = document.createElement("span");
+                textSpan.innerText = text;
+
+                // Create delete button
+                const deleteButton = document.createElement("button");
+                deleteButton.innerHTML = "❌";
+                deleteButton.classList.add("delete-btn");
+                deleteButton.addEventListener("click", function () {
+                    message.remove();
+                    removeMessage(text);
+                });
+
+                // Append text and button to message
+                message.appendChild(textSpan);
+                message.appendChild(deleteButton);
+
+                document.getElementById("messageWall").appendChild(message);
+            });
+        }
+
+        // Load messages when the page opens
+        window.onload = loadMessages;
+
+        // Allow posting with Enter key
+        document.getElementById("messageInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                postMessage();
+            }
+        });
+    </script>
+</body>
+</html>
