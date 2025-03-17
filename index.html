@@ -5,40 +5,249 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Birthday!</title>
     <style>
+        /* Global Styles */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            text-align: center;
-            padding: 50px;
-        }
-        h1 {
-            color: #ff5733;
-            font-size: 3rem;
-        }
-        button {
-            font-size: 1.5rem;
-            padding: 10px 20px;
-            cursor: pointer;
-            background-color: #4CAF50;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, 
+                #FF66B2 10%, #FF8CFF 30%, #FFB6C1 50%, 
+                #FF66B2 70%, #FFC0CB 90%, #FF8CFF 100%);
             color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        @keyframes randomGradient {
+            0% { background-position: 0% 0%; }
+            25% { background-position: 100% 0%; }
+            50% { background-position: 0% 100%; }
+            75% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        /* Container for centering the content */
+        .container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Birthday message styling */
+        .message {
+            font-size: 3em;
+            font-weight: bold;
+            color: #fff;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        /* Countdown Timer styling */
+        .countdown {
+            font-size: 4em;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #ffeb3b; /* Yellow for the countdown */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+            animation: bounce 1.5s infinite;
+        }
+
+        /* Animation for fade-in effect */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Animation for the bouncing countdown */
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Adding some sparkle effect */
+        .sparkle {
+            font-size: 3em;
+            color: #ffeb3b;
+            animation: sparkle 2s infinite;
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            opacity: 0.5;
+        }
+
+        @keyframes sparkle {
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+        }
+
+        #toggleMessage {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: #ffeb3b;
+            color: black;
             border: none;
             border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
-        button:hover {
-            background-color: #45a049;
+
+        #toggleMessage:active {
+            transform: scale(0.95);
+        }
+
+        #longMessage {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: white;
+            margin-top: 10px;
+            transition: opacity 0.3s ease-in-out;
         }
     </style>
 </head>
 <body>
-    <h1>Happy Birthday!</h1>
-    <p>Click the button to reveal a message!</p>
-    <button onclick="showMessage()">Click Me!</button>
-    <p id="message" style="display:none; font-size: 1.5rem; color: #4CAF50;">Wishing you all the best on your special day!</p>
+    <div class="container">
+        <div class="message" id="message">🎉 Happy Birthday Jen! 🎉</div>
+        <div class="countdown" id="countdown"></div>
+        <div class="sparkle">✨</div> <!-- Sparkle effect -->
+        <button id="toggleMessage">Click for a Surprise!</button>
+        <p id="longMessage" style="display: none;">Wishing you all the happiness in the world! 🎂🥳</p>
+        <p id="secretMessage" style="display: none;">Nothing to show !!</p>
+    </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script>
-        function showMessage() {
-            document.getElementById('message').style.display = 'block';
+        function triggerConfetti() {
+            confetti({
+                particleCount: 200,  // Number of confetti pieces
+                spread: 80,          // Spread angle
+                origin: { x: 0.5, y: 0.5 }  // Where the confetti should start (center of the screen)
+            });
         }
+
+        function triggerConfetti(x, y) {
+            confetti({
+                particleCount: 200,  // Number of confetti pieces
+                spread: 70,          // Spread angle
+                origin: { x: x, y: y }  // Where the confetti should start (center of the screen)
+            });
+        }
+
+        function getNextBirthdayDate() {
+            const currentYear = new Date().getFullYear();
+            const birthdayMonth = 9; // October (Month is 0-indexed)
+            const birthdayDay = 3; // 3rd of October
+            
+            // Create a Date object for the birthday of the current year
+            let nextBirthday = new Date(currentYear, birthdayMonth, birthdayDay);
+            
+            // If today's date is past the birthday, set the next birthday to next year
+            if (new Date() > nextBirthday) {
+                nextBirthday.setFullYear(currentYear + 1);
+            }
+
+            return nextBirthday;
+        }
+
+        // Check if today is her birthday
+        function isTodayBirthday() {
+            const today = new Date();
+            const birthdayMonth = 9; // October (Month is 0-indexed)
+            const birthdayDay = 3; // 3rd of October
+            return today.getMonth() === birthdayMonth && today.getDate() === birthdayDay;
+        }
+
+        // Countdown Timer
+        const birthdayDate = getNextBirthdayDate();
+        const countdownElement = document.getElementById('countdown');
+        const messageElement = document.getElementById('message');
+
+        // Calculate the next midnight (end of the current day)
+        const midnight = new Date();
+        midnight.setHours(24, 0, 0, 0); // Set to midnight of the next day
+
+        function updateCountdown() {
+            const now = new Date();
+            const timeDifference = birthdayDate - now;
+
+            if (isTodayBirthday()) {
+                triggerConfetti()
+                // It's her birthday, show the special message
+                messageElement.innerHTML = "🎉 Happy Birthday Jen! 🎉";
+                countdownElement.innerHTML = "It's your birthday today! 🎂";
+                
+                // Keep the birthday message for 1 day (until midnight)
+                setTimeout(() => {
+                    messageElement.innerHTML = "It's not your birthday yet :(";
+                    updateCountdown();  // Update countdown after midnight
+                }, midnight - new Date());
+                
+            } else {
+                // Not her birthday yet, show countdown
+                const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+                countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }
+        }
+
+        document.getElementById("toggleMessage").addEventListener("click", function() {
+            let message;
+
+            if (isTodayBirthday()) {
+                message = document.getElementById("longMessage");
+            } else {
+                message = document.getElementById("secretMessage");
+            }
+
+            if (message.style.display === "none" || message.style.display === "") {
+                message.style.display = "block";
+                message.style.opacity = 0;
+                setTimeout(() => { message.style.opacity = 1; }, 100); // Smooth fade-in
+            } else {
+                message.style.opacity = 0;
+                setTimeout(() => { message.style.display = "none"; }, 300); // Smooth fade-out
+            }
+        });
+
+        // Event listener for mouse clicks (only on birthday)
+        document.body.addEventListener('click', function(e) {
+            if (isTodayBirthday()) {
+                const x = e.clientX / window.innerWidth;  // Mouse X position
+                const y = e.clientY / window.innerHeight; // Mouse Y position
+                triggerConfetti(x, y); // Trigger confetti at the click position
+            }
+        });
+
+        triggerConfetti()
+
+        // Start the countdown
+        const countdownInterval = setInterval(updateCountdown, 1000);
     </script>
 </body>
 </html>
