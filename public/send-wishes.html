@@ -124,7 +124,7 @@
     
             // Save to localStorage
             let wishes = JSON.parse(localStorage.getItem("messages")) || [];
-            wishes.push({ name, text: message });
+            wishes.push({ name: name, text: message });
             localStorage.setItem("messages", JSON.stringify(wishes));
     
             document.querySelector(".container").innerHTML = `

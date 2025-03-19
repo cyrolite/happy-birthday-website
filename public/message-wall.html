@@ -259,8 +259,8 @@
 
     <script>
         function postMessage() {
-            const input = document.getElementById("messageInput");
-            const messageText = input.value.trim();
+            const name = document.getElementById("wishName").value.trim();
+            const messageText = document.getElementById("messageInput").value.trim();
             if (messageText === "") return;
     
             const board = document.getElementById("messageWall");
@@ -276,12 +276,11 @@
     
             // Create text container
             const textSpan = document.createElement("span");
-            textSpan.innerText = messageText;
+            textSpan.innerHTML = `<strong>${name || "Anonymous"}</strong><br>${messageText}`;
     
             // Create delete button
             const deleteButton = document.createElement("button");
             deleteButton.classList.add("delete-btn");
-            deleteButton.innerText = "❌";
     
             // Prevent delete button from opening the pop-up
             deleteButton.addEventListener("click", function (event) {
@@ -297,7 +296,7 @@
     
             // Open popup on click (except when clicking delete)
             message.addEventListener("click", function () {
-                openPopup(messageText);
+                openPopup(name, messageText);
             });
     
             // Append text and button to message
@@ -308,15 +307,16 @@
             board.appendChild(message);
     
             // Save message to localStorage
-            saveMessage({ text: messageText, x: randomX, y: randomY });
+            saveMessage({ name: name || "Anonymous", text: messageText, x: randomX, y: randomY });
     
-            // Clear input field
-            input.value = "";
+            // Clear input fields
+            document.getElementById("wishName").value = "";
+            document.getElementById("messageInput").value = "";
         }
     
         // Open the pop-up when clicking a sticky note
-        function openPopup(noteText) {
-            document.getElementById("popupText").innerText = noteText;
+        function openPopup(name, noteText) {
+            document.getElementById("popupText").innerHTML = `<strong>${name || "Anonymous"}</strong><br>${noteText}`;
             document.getElementById("notePopup").style.display = "flex";
         }
     
@@ -353,13 +353,13 @@
     
             let messages = JSON.parse(localStorage.getItem("messages")) || [];
     
-            messages.forEach(({ text, x, y }) => {
+            messages.forEach(({ name, text, x, y }) => {
                 const message = document.createElement("div");
                 message.classList.add("message");
     
                 // Create text container
                 const textSpan = document.createElement("span");
-                textSpan.innerText = text;
+                textSpan.innerHTML = `<strong>${name || "Anonymous"}</strong><br>${text}`;
     
                 // Create delete button
                 const deleteButton = document.createElement("button");
@@ -373,9 +373,9 @@
                     closePopup(); // Close pop-up if open
                 });
     
-                // Fix: Attach event listener to open the pop-up
+                // Open popup when clicking the note
                 message.addEventListener("click", function () {
-                    openPopup(text);
+                    openPopup(name, text);
                 });
     
                 // Position the note
