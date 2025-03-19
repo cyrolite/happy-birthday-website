@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Birthday Wishes</title>
+    <style>
+        html, body {
+            font-family: 'Arial', 'Sans-Serif';
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(45deg, 
+                #FF66B2 10%, #FF8CFF 30%, #FFB6C1 50%, 
+                #FF66B2 70%, #FFC0CB 90%, #FF8CFF 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        input, textarea {
+            width: 80%;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            background: yellow;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        a {
+            display: block;
+            margin-top: 20px;
+            color: yellow;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎉 It's Jenna's Birthday! 🎉</h1>
+    <h2>Please send her your well wishes! 🎁</h2>
+
+    <div class="container">
+        <input type="text" id="wishName" placeholder="Your Name">
+        <textarea id="wishMessage" placeholder="Your Birthday Wishes..."></textarea>
+        <button onclick="submitWish()">Submit Wish</button>
+    </div>
+
+    <script>
+        function submitWish() {
+            const name = document.getElementById("wishName").value.trim();
+            const message = document.getElementById("wishMessage").value.trim();
+
+            if (name === "" || message === "") {
+                alert("Please enter both your name and your wish!");
+                return;
+            }
+
+            // Save to localStorage
+            let wishes = JSON.parse(localStorage.getItem("messages")) || [];
+            wishes.push({ name, text: message });
+            localStorage.setItem("messages", JSON.stringify(wishes));
+
+            // Redirect to message wall
+            window.location.href = "message-wall.html";
+        }
+    </script>
+
+</body>
+</html>
