@@ -231,8 +231,8 @@
 <body>
     <div class="navbar">
         <a href="index.html">Back To Countdown!</a>
-        <a href="send-wishes.html">✍️ Send Wishes</a>
         <a href="message-wall.html">🎉 Birthday Wall</a>
+        <a href="send-wishes.html">✍️ Send Wishes</a>
         <a href="https://github.com/cyrolite/happy-birthday-website" target="_blank">💻 GitHub</a>
     </div>
     
@@ -262,132 +262,138 @@
             const input = document.getElementById("messageInput");
             const messageText = input.value.trim();
             if (messageText === "") return;
-
+    
             const board = document.getElementById("messageWall");
             const boardWidth = board.clientWidth - 160; // Leave some margin
             const boardHeight = board.clientHeight - 160;
-
+    
             const randomX = Math.floor(Math.random() * boardWidth);
             const randomY = Math.floor(Math.random() * boardHeight);
-
+    
             // Create sticky note element
             const message = document.createElement("div");
             message.classList.add("message");
-
+    
             // Create text container
             const textSpan = document.createElement("span");
             textSpan.innerText = messageText;
-
+    
             // Create delete button
             const deleteButton = document.createElement("button");
             deleteButton.classList.add("delete-btn");
-            deleteButton.addEventListener("click", function () {
+            deleteButton.innerText = "❌";
+    
+            // Prevent delete button from opening the pop-up
+            deleteButton.addEventListener("click", function (event) {
+                event.stopPropagation(); // Prevents triggering the parent div's click event
                 removeMessage(messageText); // Delete from localStorage
                 message.remove(); // Remove from UI
+                closePopup(); // Close pop-up if open
             });
-
+    
             // Set random position
             message.style.left = `${randomX}px`;
             message.style.top = `${randomY}px`;
-
-            // Open popup on click
+    
+            // Open popup on click (except when clicking delete)
             message.addEventListener("click", function () {
                 openPopup(messageText);
             });
-
+    
             // Append text and button to message
             message.appendChild(textSpan);
             message.appendChild(deleteButton);
-
+    
             // Append message to the board
             board.appendChild(message);
-
+    
             // Save message to localStorage
             saveMessage({ text: messageText, x: randomX, y: randomY });
-
+    
             // Clear input field
             input.value = "";
         }
-
+    
         // Open the pop-up when clicking a sticky note
         function openPopup(noteText) {
             document.getElementById("popupText").innerText = noteText;
             document.getElementById("notePopup").style.display = "flex";
         }
-
+    
         // Close the pop-up
         function closePopup() {
             document.getElementById("notePopup").style.display = "none";
         }
-
+    
         // Save message with coordinates
         function saveMessage(messageObj) {
             let messages = JSON.parse(localStorage.getItem("messages")) || [];
             messages.push(messageObj);
             localStorage.setItem("messages", JSON.stringify(messages));
         }
-
+    
         // Remove message from localStorage when deleted
         function removeMessage(text) {
             let messages = JSON.parse(localStorage.getItem("messages")) || [];
-
+    
             // Find and remove the specific message
             const updatedMessages = messages.filter(msg => msg.text !== text);
-
+    
             // Update localStorage
             localStorage.setItem("messages", JSON.stringify(updatedMessages));
-
+    
             // Refresh the message wall UI
             loadMessages();
         }
+    
         // Load messages on page refresh with saved positions
         function loadMessages() {
             const board = document.getElementById("messageWall");
             board.innerHTML = ""; // Clear the board before loading
-
+    
             let messages = JSON.parse(localStorage.getItem("messages")) || [];
-
+    
             messages.forEach(({ text, x, y }) => {
                 const message = document.createElement("div");
                 message.classList.add("message");
-
+    
                 // Create text container
                 const textSpan = document.createElement("span");
                 textSpan.innerText = text;
-
+    
                 // Create delete button
                 const deleteButton = document.createElement("button");
                 deleteButton.classList.add("delete-btn");
-
-                // Fix: Attach event listener so delete works after refresh
-                deleteButton.addEventListener("click", function () {
+    
+                // Prevent delete button from opening the pop-up
+                deleteButton.addEventListener("click", function (event) {
+                    event.stopPropagation(); // Prevents triggering the parent div's click event
                     removeMessage(text); // Remove from localStorage
                     message.remove(); // Remove from UI
+                    closePopup(); // Close pop-up if open
                 });
-
+    
                 // Fix: Attach event listener to open the pop-up
                 message.addEventListener("click", function () {
                     openPopup(text);
                 });
-
+    
                 // Position the note
                 message.style.left = `${x}px`;
                 message.style.top = `${y}px`;
-
+    
                 // Append elements
                 message.appendChild(textSpan);
                 message.appendChild(deleteButton);
                 board.appendChild(message);
             });
         }
-
-
+    
         // Load messages when the page opens
         window.onload = function () {
             loadMessages();
-            localStorage.setItem("messages", localStorage.getItem("messages")); // Force refresh
         };
-
+    
         // Allow posting with Enter key
         document.getElementById("messageInput").addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
@@ -395,6 +401,6 @@
                 postMessage();
             }
         });
-    </script>
+    </script>    
 </body>
 </html>

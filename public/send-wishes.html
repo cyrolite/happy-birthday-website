@@ -70,9 +70,38 @@
             background: gold;
         }
 
+                /* Fix main menu to stay on top */
+                .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            text-align: left;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2em;
+            margin: 0 15px;
+        }
+
+        .navbar a:hover {
+            color: yellow;
+        }
+
     </style>
 </head>
 <body>
+    <div class="navbar">
+        <a href="index.html">Back To Countdown!</a>
+        <a href="message-wall.html">🎉 Birthday Wall</a>
+        <a href="send-wishes.html">✍️ Send Wishes</a>
+        <a href="https://github.com/cyrolite/happy-birthday-website" target="_blank">💻 GitHub</a>
+    </div>
 
     <h1>🎉 It's Jenna's Birthday! 🎉</h1>
     <h2>Please send her your well wishes! 🎁</h2>
