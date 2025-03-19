@@ -87,28 +87,31 @@
         function submitWish() {
             const name = document.getElementById("wishName").value.trim();
             const message = document.getElementById("wishMessage").value.trim();
-
+    
             if (name === "" || message === "") {
                 alert("Please enter both your name and your wish!");
                 return;
             }
-
+    
             // Save to localStorage
             let wishes = JSON.parse(localStorage.getItem("messages")) || [];
             wishes.push({ name, text: message });
             localStorage.setItem("messages", JSON.stringify(wishes));
-
+    
             // Redirect to message wall
             window.location.href = "message-wall.html";
         }
-
-        // Prevent Enter from submitting
+    
+        // Allow Enter to add a new line in textarea instead of doing nothing
         document.getElementById("wishMessage").addEventListener("keydown", function (event) {
-            if (event.key === "Enter") {
-                event.preventDefault(); // Prevents form submission
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                let cursorPosition = this.selectionStart;
+                this.value = this.value.substring(0, cursorPosition) + "\n" + this.value.substring(cursorPosition);
+                this.selectionStart = this.selectionEnd = cursorPosition + 1;
             }
         });
-    </script>
+    </script>    
 
 </body>
 </html>
