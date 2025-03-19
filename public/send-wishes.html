@@ -98,8 +98,10 @@
             wishes.push({ name, text: message });
             localStorage.setItem("messages", JSON.stringify(wishes));
     
-            // Redirect to message wall
-            window.location.href = "message-wall.html";
+            document.querySelector(".container").innerHTML = `
+            <h2>🎉 Thank you for your well wishes! 🎉</h2>
+            <p>Your message has been recorded.</p>
+        `;
         }
     
         // Allow Enter to add a new line in textarea instead of doing nothing
