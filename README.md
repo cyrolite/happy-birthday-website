@@ -1,6 +1,10 @@
+---
+layout: default
+---
+
 # Happy Birthday Jenna! 🎊
 
-{{ toc() }}
+{:toc}
 
 It's a birthday website for somebody special.
 
