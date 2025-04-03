@@ -1,4 +1,7 @@
 # Happy Birthday Jenna! 🎊
+
+{{ toc() }}
+
 It's a birthday website for somebody special.
 
 This is very much worth the time and the effort!
