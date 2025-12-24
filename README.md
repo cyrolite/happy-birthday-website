@@ -1,8 +1,10 @@
+Note: This project will be archived and this will cease continuation and development. Thank you for your support. 
+
 ---
 layout: default
 ---
 
-# Happy Birthday Jenna! 🎊
+# Happy Birthday (REDACTED)! 🎊
 
 {:toc}
 
